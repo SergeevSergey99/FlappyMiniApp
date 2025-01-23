@@ -173,8 +173,7 @@ export default {
     },
     handleKeydown(event) {
       if (event.code === "Space" && this.gameState === "playing") {
-        event.preventDefault(); // Prevent scrolling
-        this.handleJump();
+        this.handleJump(event);
       }
     },
   },
