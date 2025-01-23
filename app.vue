@@ -35,8 +35,8 @@ export default {
       canvasWidth: 320,
       canvasHeight: 480,
       gravity: 0.1,
-      lift: -5,
-      pipeGap: 100,
+      lift: -3,
+      pipeGap: 150,
       pipeWidth: 50,
       birdSize: 20,
       score: 0,
@@ -168,22 +168,29 @@ export default {
     },
     // Обработка прыжков
     handleJump() {
+      event.preventDefault(); // Prevent default click/touch behavior
       this.bird.velocity = this.lift;
     },
     handleKeydown(event) {
       if (event.code === "Space" && this.gameState === "playing") {
+        event.preventDefault(); // Prevent scrolling
         this.handleJump();
       }
     },
   },
   mounted() {
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Разворачиваем приложение
 
+    const tg = window.Telegram?.WebApp;
+    if (!tg) {
+      console.error('Telegram WebApp not initialized');
+      return;
+    }
+    tg.expand();
     // Ждём, пока canvas полностью загрузится
     this.$nextTick(() => {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
+        canvas.addEventListener('touchstart', this.handleJump);
         canvas.addEventListener("click", this.handleJump); // Обработка прыжка по клику
       }
     });
@@ -194,6 +201,7 @@ export default {
   beforeUnmount() {
     const canvas = this.$refs.gameCanvas;
     if (canvas) {
+      canvas.removeEventListener('touchstart', this.handleJump);
       canvas.removeEventListener("click", this.handleJump);
     }
     window.removeEventListener("keydown", this.handleKeydown);
