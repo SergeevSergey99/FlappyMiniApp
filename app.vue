@@ -187,12 +187,15 @@ export default {
     }
     tg.expand();
 
+    tg.onEvent("mainButtonClicked", () => {
+      handleJump();
+    });
     // Ждём, пока canvas полностью загрузится
     this.$nextTick(() => {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
-        canvas.addEventListener('touchstart', this.handleJump, { passive: false });
-        canvas.addEventListener("click", this.handleJump); // Обработка прыжка по клику
+        canvas.addEventListener('touchstart', this.handleJump);
+        //canvas.addEventListener("click", this.handleJump); // Обработка прыжка по клику
         canvas.style.touchAction = 'none'; // Disable browser touch handling
       }
     });
@@ -224,6 +227,8 @@ export default {
 }
 
 canvas {
+  pointer-events: auto; /* Убедимся, что canvas принимает события */
+  touch-action: manipulation; /* Улучшает обработку на мобильных устройствах */
   border: 2px solid black;
 }
 
