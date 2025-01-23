@@ -63,6 +63,17 @@ export default {
         this.updateGame();
         this.drawGame();
       }, 20);
+
+      this.$nextTick(() => {
+        const canvas = this.$refs.gameCanvas;
+        if (canvas) {
+          console.log("Canvas found:", canvas);
+          canvas.addEventListener("pointerdown", this.handleJump);
+          canvas.style.touchAction = "none";
+        } else {
+          console.error("Canvas not found");
+        }
+      });
     },
     // Обновление состояния игры
     updateGame() {
@@ -189,9 +200,9 @@ export default {
       console.error('Telegram WebApp not initialized');
       return;
     }
+    console.log("Telegram WebApp initialized:", tg);
     tg.expand();
 
-    tg.onEvent("mainButtonClicked", this.handleJump);
     tg.onEvent("mainButtonClicked", this.handleJump);
     // Ждём, пока canvas полностью загрузится
     this.$nextTick(() => {
