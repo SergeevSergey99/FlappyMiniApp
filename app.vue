@@ -191,7 +191,7 @@ export default {
     this.$nextTick(() => {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
-        canvas.addEventListener('touchstart', this.handleJump);
+        canvas.addEventListener('touchstart', this.handleJump, { passive: false });
         canvas.addEventListener("click", this.handleJump); // Обработка прыжка по клику
         canvas.style.touchAction = 'none'; // Disable browser touch handling
       }
