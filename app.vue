@@ -224,7 +224,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #70c5ce;
+  background: #F0c52e;
   margin: 0;
   overflow: hidden;
 }
