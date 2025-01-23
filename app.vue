@@ -169,6 +169,7 @@ export default {
     // Обработка прыжков
     handleJump(event) {
       event.preventDefault(); // Prevent default click/touch behavior
+      event.stopPropagation();
       this.bird.velocity = this.lift;
     },
     handleKeydown(event) {
@@ -185,12 +186,14 @@ export default {
       return;
     }
     tg.expand();
+
     // Ждём, пока canvas полностью загрузится
     this.$nextTick(() => {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
         canvas.addEventListener('touchstart', this.handleJump);
         canvas.addEventListener("click", this.handleJump); // Обработка прыжка по клику
+        canvas.style.touchAction = 'none'; // Disable browser touch handling
       }
     });
 
