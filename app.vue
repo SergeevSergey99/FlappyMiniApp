@@ -197,6 +197,8 @@ export default {
     this.$nextTick(() => {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
+        console.log('canvas', canvas);
+        canvas.addEventListener('pointerdown', this.handleJump, { passive: false });
         canvas.addEventListener('touchstart', this.handleJump, { passive: false });
         canvas.addEventListener("click", this.handleJump, { passive: false }); // Обработка прыжка по клику
         canvas.style.touchAction = 'none'; // Disable browser touch handling
@@ -209,6 +211,7 @@ export default {
   beforeUnmount() {
     const canvas = this.$refs.gameCanvas;
     if (canvas) {
+      canvas.removeEventListener('pointerdown', this.handleJump);
       canvas.removeEventListener('touchstart', this.handleJump);
       canvas.removeEventListener("click", this.handleJump);
     }
@@ -224,7 +227,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #F0c52e;
+  background: #70c5ce;
   margin: 0;
   overflow: hidden;
 }
