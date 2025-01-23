@@ -167,7 +167,7 @@ export default {
       }
     },
     // Обработка прыжков
-    handleJump() {
+    handleJump(event) {
       event.preventDefault(); // Prevent default click/touch behavior
       this.bird.velocity = this.lift;
     },
