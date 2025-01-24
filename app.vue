@@ -36,12 +36,15 @@ export default {
       canvasHeight: 480,
       gravity: 0.1,
       lift: -3,
-      pipeGap: 150,
+      pipeGapMin: 100,
+      pipeGapMax: 170,
+      pipeOffsetMin: 170,
+      pipeOffsetMax: 220,
       pipeWidth: 50,
       birdSize: 20,
       score: 0,
       highScore: 0,
-      bird: { x: 50, y: 200, velocity: 0 },
+      bird: {x: 50, y: 200, velocity: 0},
       pipes: [],
       gameInterval: null,
       gameState: "start", // Возможные состояния: start, playing, gameover
@@ -55,8 +58,9 @@ export default {
     },
     // Настройка игры
     setupGame() {
-      this.pipes = this.generatePipes();
-      this.bird = { x: 50, y: 200, velocity: 0 };
+      //this.pipes = this.generatePipes();
+      this.generatePipes();
+      this.bird = {x: 50, y: 200, velocity: 0};
       this.score = 0;
 
       this.gameInterval = setInterval(() => {
@@ -141,17 +145,23 @@ export default {
     },
     // Генерация труб
     generatePipes() {
-      const pipes = [];
+      this.pipes = [];
       for (let i = 0; i < 3; i++) {
-        pipes.push(this.generatePipe(i * 200 + 300));
+        this.pipes.push(this.generatePipe());
       }
-      return pipes;
     },
-    generatePipe(x = this.canvasWidth) {
-      const top =
-          Math.random() * (this.canvasHeight - this.pipeGap - 100) + 50;
-      const bottom = top + this.pipeGap;
-      return { x, top, bottom };
+    generatePipe() {
+      // min of this.canvasWidth and last pipe x + 300
+      let x = this.canvasWidth;
+      if (this.pipes.length > 0)
+      {
+        const offset = Math.random() * (this.pipeOffsetMax - this.pipeOffsetMin) + this.pipeOffsetMin;
+        x = Math.max(this.canvasWidth, this.pipes[this.pipes.length - 1].x + offset);
+      }
+      const gap = Math.random() * (this.pipeGapMax - this.pipeGapMin) + this.pipeGapMin;
+      const top = Math.random() * (this.canvasHeight - gap - 100) + 50;
+      const bottom = top + gap;
+      return {x, top, bottom};
     },
     // Завершение игры
     endGame() {
@@ -209,9 +219,9 @@ export default {
       const canvas = this.$refs.gameCanvas;
       if (canvas) {
         console.log('canvas', canvas);
-        canvas.addEventListener('pointerdown', this.handleJump, { passive: false });
-        canvas.addEventListener('touchstart', this.handleJump, { passive: false });
-        canvas.addEventListener("click", this.handleJump, { passive: false }); // Обработка прыжка по клику
+        canvas.addEventListener('pointerdown', this.handleJump, {passive: false});
+        canvas.addEventListener('touchstart', this.handleJump, {passive: false});
+        canvas.addEventListener("click", this.handleJump, {passive: false}); // Обработка прыжка по клику
         canvas.style.touchAction = 'none'; // Disable browser touch handling
       }
     });
