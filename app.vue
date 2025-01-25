@@ -46,7 +46,8 @@ export default {
       highScore: 0,
       bird: {x: 50, y: 200, velocity: 0},
       pipes: [],
-      gameInterval: null,
+      //gameInterval: null,
+      gameAnimationFrame: null,
       gameState: "start", // Возможные состояния: start, playing, gameover
     };
   },
@@ -63,10 +64,17 @@ export default {
       this.bird = {x: 50, y: 200, velocity: 0};
       this.score = 0;
 
+      /*
       this.gameInterval = setInterval(() => {
         this.updateGame();
         this.drawGame();
-      }, 20);
+      }, 20);*/
+
+      const gameLoop = () => {
+        this.updateGame();
+        this.drawGame();
+        this.gameAnimationFrame = requestAnimationFrame(gameLoop);
+      };
 
       this.$nextTick(() => {
         const canvas = this.$refs.gameCanvas;
@@ -74,6 +82,7 @@ export default {
           console.log("Canvas found:", canvas);
           canvas.addEventListener("pointerdown", this.handleJump);
           canvas.style.touchAction = "none";
+          gameLoop();
         } else {
           console.error("Canvas not found");
         }
@@ -165,7 +174,12 @@ export default {
     },
     // Завершение игры
     endGame() {
-      clearInterval(this.gameInterval);
+
+      if (this.gameAnimationFrame)
+      {
+        cancelAnimationFrame(this.gameAnimationFrame);
+      }
+      //clearInterval(this.gameInterval);
       this.checkHighScore();
       this.gameState = "gameover";
     },
@@ -254,6 +268,8 @@ export default {
 }
 
 canvas {
+  transform: translateZ(0); /* Принудительное аппаратное ускорение */
+  will-change: transform; /* Hint browser для оптимизации */
   pointer-events: auto; /* Убедимся, что canvas принимает события */
   touch-action: manipulation; /* Улучшает обработку на мобильных устройствах */
   border: 2px solid black;
